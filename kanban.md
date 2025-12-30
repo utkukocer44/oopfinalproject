@@ -40,12 +40,13 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
-- Create SavingsAccount class
+- Create CheckingAccount class
 
 ---
 
-## 🟩 Done
+## 🟩 Done 
 
+- Create SavingsAccount class
 - Create Account base class
 - GitHub repository created
 - Use case diagram completed
