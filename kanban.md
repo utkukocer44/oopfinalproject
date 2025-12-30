@@ -40,12 +40,13 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
-- Create Transferable interface
+- Create Transaction class
 
 ---
 
 ## 🟩 Done 
 
+- Create Transferable interface
 - Create CheckingAccount class
 - Create SavingsAccount class
 - Create Account base class
