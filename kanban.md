@@ -40,6 +40,7 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
+- Create SavingsAccount class
 
 ---
 
