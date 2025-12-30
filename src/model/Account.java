@@ -1,6 +1,6 @@
 package model;
 
-public class Account {
+public class Account implements Transferable {
 
     // Encapsulation: fields are private
     private String accountNumber;
@@ -35,4 +35,14 @@ public class Account {
     public String getAccountNumber() {
         return accountNumber;
     }
+
+
+
+    @Override
+public void transfer(Account to, double amount) {
+    if (amount > 0 && amount <= balance) {
+        this.withdraw(amount);
+        to.deposit(amount);
+    }
+}
 }
