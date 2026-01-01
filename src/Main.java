@@ -22,6 +22,7 @@ public class Main {
         checking.withdraw(2500); // overdraft test
 
         bank.transfer(savings, checking, 1000);
+        bank.exportTransactionsToCSV("transactions.csv");
 
         System.out.println("Savings balance: " + savings.getBalance());
         System.out.println("Checking balance: " + checking.getBalance());
