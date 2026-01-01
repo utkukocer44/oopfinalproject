@@ -19,38 +19,56 @@ public class Bank {
         transactionCounter = 1;
     }
 
-    // Add new account to bank
+    // Add new account
     public void addAccount(Account account) {
         accounts.add(account);
     }
 
-    // Transfer money between accounts
-    public void transfer(Account from, Account to, double amount) {
+    // DEPOSIT with transaction
+    public void deposit(Account account, double amount) {
+        if (amount > 0) {
+            account.deposit(amount);
+            transactions.add(
+                    new Transaction(transactionCounter++, "DEPOSIT", amount));
+        }
+    }
+
+    // WITHDRAW with transaction + balance control
+    public boolean withdraw(Account account, double amount) {
+        if (amount > 0 && amount <= account.getBalance()) {
+            account.withdraw(amount);
+            transactions.add(
+                    new Transaction(transactionCounter++, "WITHDRAW", amount));
+            return true;
+        }
+        return false;
+    }
+
+    // TRANSFER with transaction
+    public boolean transfer(Account from, Account to, double amount) {
         if (amount > 0 && from.getBalance() >= amount) {
             from.withdraw(amount);
             to.deposit(amount);
 
-            Transaction transaction =
-                    new Transaction(transactionCounter++, "TRANSFER", amount);
-            transactions.add(transaction);
+            transactions.add(
+                    new Transaction(transactionCounter++, "TRANSFER", amount));
+            return true;
         }
+        return false;
     }
 
-    // Get all transactions
     public List<Transaction> getTransactions() {
         return transactions;
     }
 
-    // Get all accounts
     public List<Account> getAccounts() {
         return accounts;
     }
 
-    // EXPORT TRANSACTIONS TO CSV
+    // EXPORT TRANSACTIONS
     public void exportTransactionsToCSV(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
 
-            // CSV header
             writer.append("TransactionId,Type,Amount,Date\n");
 
             for (Transaction t : transactions) {
@@ -60,46 +78,64 @@ public class Bank {
                 writer.append(t.getDate().toString()).append("\n");
             }
 
-            System.out.println("Transactions exported to " + fileName);
-
         } catch (IOException e) {
-            System.out.println("Error while exporting CSV: " + e.getMessage());
+            System.out.println("CSV export error: " + e.getMessage());
         }
     }
 
-    // LOAD ACCOUNTS FROM CSV
+    // LOAD ACCOUNTS
     public void loadAccountsFromCSV(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
 
+            reader.readLine(); // header
             String line;
-            reader.readLine(); // header atla
 
             while ((line = reader.readLine()) != null) {
 
-                String[] data = line.split(",");
-
-                String accountNumber = data[0];
-                String type = data[1];
-                double balance = Double.parseDouble(data[2]);
-                double extra = Double.parseDouble(data[3]);
-
-                Account account;
+                String[] d = line.split(",");
+                String no = d[0];
+                String type = d[1];
+                double balance = Double.parseDouble(d[2]);
+                double extra = Double.parseDouble(d[3]);
 
                 if (type.equalsIgnoreCase("SAVINGS")) {
-                    account = new SavingsAccount(accountNumber, balance, extra);
+                    accounts.add(new SavingsAccount(no, balance, extra));
                 } else if (type.equalsIgnoreCase("CHECKING")) {
-                    account = new CheckingAccount(accountNumber, balance, extra);
-                } else {
-                    continue;
+                    accounts.add(new CheckingAccount(no, balance, extra));
                 }
-
-                accounts.add(account);
             }
 
-            System.out.println("Accounts loaded from " + fileName);
-
         } catch (Exception e) {
-            System.out.println("Error reading accounts CSV: " + e.getMessage());
+            System.out.println("Account load error: " + e.getMessage());
+        }
+    }
+
+    // SAVE ACCOUNTS
+    public void saveAccountsToCSV(String fileName) {
+        try (FileWriter writer = new FileWriter(fileName)) {
+
+            writer.append("accountNumber,type,balance,extra\n");
+
+            for (Account a : accounts) {
+
+                if (a instanceof SavingsAccount) {
+                    SavingsAccount sa = (SavingsAccount) a;
+                    writer.append(sa.getAccountNumber()).append(",SAVINGS,")
+                            .append(String.valueOf(sa.getBalance())).append(",")
+                            .append(String.valueOf(sa.calculateInterest() / sa.getBalance()))
+                            .append("\n");
+
+                } else if (a instanceof CheckingAccount) {
+                    CheckingAccount ca = (CheckingAccount) a;
+                    writer.append(ca.getAccountNumber()).append(",CHECKING,")
+                            .append(String.valueOf(ca.getBalance())).append(",")
+                            .append(String.valueOf(ca.getOverdraftLimit()))
+                            .append("\n");
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Account save error: " + e.getMessage());
         }
     }
 }
