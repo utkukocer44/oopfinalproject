@@ -40,13 +40,17 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
-- Add CSV export for transactions
-- Create Main test class
-- Create Bank class
+
+
 ---
 
 ## 🟩 Done 
 
+- Create Main test class
+- Create Bank class
+- Add CSV export for transactions
+- Design CSV structure for accounts
+- Create data files for persistence
 - Create Transaction class
 - Create Transferable interface
 - Create CheckingAccount class

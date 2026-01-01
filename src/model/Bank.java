@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Bank {
 
@@ -28,7 +30,8 @@ public class Bank {
             from.withdraw(amount);
             to.deposit(amount);
 
-            Transaction transaction = new Transaction(transactionCounter++, "TRANSFER", amount);
+            Transaction transaction =
+                    new Transaction(transactionCounter++, "TRANSFER", amount);
             transactions.add(transaction);
         }
     }
@@ -45,25 +48,58 @@ public class Bank {
 
     // EXPORT TRANSACTIONS TO CSV
     public void exportTransactionsToCSV(String fileName) {
-
         try (FileWriter writer = new FileWriter(fileName)) {
 
             // CSV header
             writer.append("TransactionId,Type,Amount,Date\n");
 
-           for (Transaction t : transactions) {
-  
-            writer.append(String.valueOf(t.getTransactionId())).append(",");
-            writer.append(t.getType()).append(",");  
-            writer.append(String.valueOf(t.getAmount())).append(",");
-            writer.append(t.getDate().toString()).append("\n");
-}
-
+            for (Transaction t : transactions) {
+                writer.append(String.valueOf(t.getTransactionId())).append(",");
+                writer.append(t.getType()).append(",");
+                writer.append(String.valueOf(t.getAmount())).append(",");
+                writer.append(t.getDate().toString()).append("\n");
+            }
 
             System.out.println("Transactions exported to " + fileName);
 
         } catch (IOException e) {
             System.out.println("Error while exporting CSV: " + e.getMessage());
+        }
+    }
+
+    // LOAD ACCOUNTS FROM CSV
+    public void loadAccountsFromCSV(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+
+            String line;
+            reader.readLine(); // header atla
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                String accountNumber = data[0];
+                String type = data[1];
+                double balance = Double.parseDouble(data[2]);
+                double extra = Double.parseDouble(data[3]);
+
+                Account account;
+
+                if (type.equalsIgnoreCase("SAVINGS")) {
+                    account = new SavingsAccount(accountNumber, balance, extra);
+                } else if (type.equalsIgnoreCase("CHECKING")) {
+                    account = new CheckingAccount(accountNumber, balance, extra);
+                } else {
+                    continue;
+                }
+
+                accounts.add(account);
+            }
+
+            System.out.println("Accounts loaded from " + fileName);
+
+        } catch (Exception e) {
+            System.out.println("Error reading accounts CSV: " + e.getMessage());
         }
     }
 }
