@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Bank {
 
@@ -26,8 +28,7 @@ public class Bank {
             from.withdraw(amount);
             to.deposit(amount);
 
-            Transaction transaction =
-                    new Transaction(transactionCounter++, "TRANSFER", amount);
+            Transaction transaction = new Transaction(transactionCounter++, "TRANSFER", amount);
             transactions.add(transaction);
         }
     }
@@ -40,5 +41,29 @@ public class Bank {
     // Get all accounts
     public List<Account> getAccounts() {
         return accounts;
+    }
+
+    // EXPORT TRANSACTIONS TO CSV
+    public void exportTransactionsToCSV(String fileName) {
+
+        try (FileWriter writer = new FileWriter(fileName)) {
+
+            // CSV header
+            writer.append("TransactionId,Type,Amount,Date\n");
+
+           for (Transaction t : transactions) {
+  
+            writer.append(String.valueOf(t.getTransactionId())).append(",");
+            writer.append(t.getType()).append(",");  
+            writer.append(String.valueOf(t.getAmount())).append(",");
+            writer.append(t.getDate().toString()).append("\n");
+}
+
+
+            System.out.println("Transactions exported to " + fileName);
+
+        } catch (IOException e) {
+            System.out.println("Error while exporting CSV: " + e.getMessage());
+        }
     }
 }

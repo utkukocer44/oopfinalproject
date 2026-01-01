@@ -40,6 +40,7 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
+- Add CSV export for transactions
 - Create Main test class
 - Create Bank class
 ---
