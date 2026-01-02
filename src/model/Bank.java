@@ -138,4 +138,46 @@ public class Bank {
             System.out.println("Account save error: " + e.getMessage());
         }
     }
+
+    public void loadAccountsFromCSV(String fileName, AuthService authService) {
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+
+            String line;
+            reader.readLine(); // header atla
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                String username = data[0];
+                String accNo = data[1];
+                String type = data[2];
+                double balance = Double.parseDouble(data[3]);
+                double extra = Double.parseDouble(data[4]);
+
+                Account account;
+
+                if (type.equalsIgnoreCase("SAVINGS")) {
+                    account = new SavingsAccount(accNo, balance, extra);
+                } else if (type.equalsIgnoreCase("CHECKING")) {
+                    account = new CheckingAccount(accNo, balance, extra);
+                } else {
+                    continue;
+                }
+
+                User owner = authService.findUserByUsername(username);
+                if (owner != null) {
+                    owner.addAccount(account);
+                    accounts.add(account);
+                }
+            }
+
+            System.out.println("Accounts loaded from " + fileName);
+
+        } catch (Exception e) {
+            System.out.println("Error loading accounts CSV: " + e.getMessage());
+        }
+    }
+
 }

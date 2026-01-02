@@ -16,6 +16,8 @@ The project follows basic Agile principles and task-based development.
 ---
 
 ## 🟨 To Do
+ 
+ - Added login system and refactor main.java 
 
 ### 📐 Diagrams & Documentation
 - Final review of class diagram
