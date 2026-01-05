@@ -43,13 +43,14 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
- - Added deposit and withdraw features in Bank class
+- Refactor ban.java
 
 ---
 
 ## 🟩 Done 
 
- - Added login system and refactor main.java
+- Added deposit and withdraw features in Bank class
+- Added login system and refactor main.java
 - Create Main test class
 - Create Bank class
 - Add CSV export for transactions
