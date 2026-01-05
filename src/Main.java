@@ -32,88 +32,25 @@ public class Main {
         int choice;
 
         do {
-            System.out.println("\n--- BANK MENU ---");
-            System.out.println("1. Hesapları Görüntüle");
-            System.out.println("2. Para Yatır");
-            System.out.println("3. Para Çek");
-            System.out.println("4. Para Transferi");
-            System.out.println("5. Çıkış");
-            System.out.print("Seçim: ");
+            printMenu();
             choice = sc.nextInt();
 
             switch (choice) {
 
                 case 1:
-                    if (loggedUser.getAccounts().isEmpty()) {
-                        System.out.println("⚠️ Hesabınız yok");
-                    } else {
-                        for (Account acc : loggedUser.getAccounts()) {
-                            System.out.println(
-                                    acc.getAccountNumber() +
-                                            " | Bakiye: " + acc.getBalance());
-                        }
-                    }
+                    showAccounts(loggedUser);
                     break;
 
                 case 2:
-                    System.out.print("Hesap No: ");
-                    String depNo = sc.next();
-                    System.out.print("Tutar: ");
-                    double depAmount = sc.nextDouble();
-
-                    Account depAcc = bank.findAccountByNumber(depNo);
-
-                    if (depAcc != null && loggedUser.getAccounts().contains(depAcc)) {
-                        bank.deposit(depAcc, depAmount);
-                        System.out.println("✅ Para yatırıldı");
-                    } else {
-                        System.out.println("❌ Hesap bulunamadı");
-                    }
+                    handleDeposit(sc, bank, loggedUser);
                     break;
 
                 case 3:
-                    System.out.print("Hesap No: ");
-                    String witNo = sc.next();
-                    System.out.print("Tutar: ");
-                    double witAmount = sc.nextDouble();
-
-                    Account witAcc = bank.findAccountByNumber(witNo);
-
-                    if (witAcc != null && loggedUser.getAccounts().contains(witAcc)) {
-                        boolean success = bank.withdraw(witAcc, witAmount);
-                        if (success) {
-                            System.out.println("✅ Para çekildi");
-                        } else {
-                            System.out.println("❌ Yetersiz bakiye");
-                        }
-                    } else {
-                        System.out.println("❌ Hesap bulunamadı");
-                    }
+                    handleWithdraw(sc, bank, loggedUser);
                     break;
 
                 case 4:
-                    System.out.print("Gönderen Hesap: ");
-                    String fromNo = sc.next();
-                    System.out.print("Alıcı Hesap: ");
-                    String toNo = sc.next();
-                    System.out.print("Tutar: ");
-                    double amount = sc.nextDouble();
-
-                    Account from = bank.findAccountByNumber(fromNo);
-                    Account to = bank.findAccountByNumber(toNo);
-
-                    if (from == null || to == null) {
-                        System.out.println("❌ Hesap bulunamadı");
-                    } else if (!loggedUser.getAccounts().contains(from)) {
-                        System.out.println("❌ Bu hesap size ait değil");
-                    } else {
-                        boolean success = bank.transfer(from, to, amount);
-                        if (success) {
-                            System.out.println("✅ Transfer başarılı");
-                        } else {
-                            System.out.println("❌ Yetersiz bakiye");
-                        }
-                    }
+                    handleTransfer(sc, bank, loggedUser);
                     break;
 
                 case 5:
@@ -126,5 +63,94 @@ public class Main {
             }
 
         } while (choice != 5);
+    }
+
+    // ===== MENU =====
+    private static void printMenu() {
+        System.out.println("\n--- BANK MENU ---");
+        System.out.println("1. Hesapları Görüntüle");
+        System.out.println("2. Para Yatır");
+        System.out.println("3. Para Çek");
+        System.out.println("4. Para Transferi");
+        System.out.println("5. Çıkış");
+        System.out.print("Seçim: ");
+    }
+
+    // ===== SHOW ACCOUNTS =====
+    private static void showAccounts(User user) {
+        if (user.getAccounts().isEmpty()) {
+            System.out.println("⚠️ Hesabınız yok");
+            return;
+        }
+
+        for (Account acc : user.getAccounts()) {
+            System.out.println(
+                    acc.getAccountNumber() +
+                            " | Bakiye: " + acc.getBalance());
+        }
+    }
+
+    // ===== DEPOSIT =====
+    private static void handleDeposit(Scanner sc, Bank bank, User user) {
+        System.out.print("Hesap No: ");
+        String accNo = sc.next();
+        System.out.print("Tutar: ");
+        double amount = sc.nextDouble();
+
+        Account acc = bank.findAccountByNumber(accNo);
+
+        if (acc != null && user.getAccounts().contains(acc)) {
+            bank.deposit(acc, amount);
+            System.out.println("✅ Para yatırıldı");
+        } else {
+            System.out.println("❌ Hesap bulunamadı");
+        }
+    }
+
+    // ===== WITHDRAW =====
+    private static void handleWithdraw(Scanner sc, Bank bank, User user) {
+        System.out.print("Hesap No: ");
+        String accNo = sc.next();
+        System.out.print("Tutar: ");
+        double amount = sc.nextDouble();
+
+        Account acc = bank.findAccountByNumber(accNo);
+
+        if (acc != null && user.getAccounts().contains(acc)) {
+            boolean success = bank.withdraw(acc, amount);
+            if (success) {
+                System.out.println("✅ Para çekildi");
+            } else {
+                System.out.println("❌ Yetersiz bakiye");
+            }
+        } else {
+            System.out.println("❌ Hesap bulunamadı");
+        }
+    }
+
+    // ===== TRANSFER =====
+    private static void handleTransfer(Scanner sc, Bank bank, User user) {
+        System.out.print("Gönderen Hesap: ");
+        String fromNo = sc.next();
+        System.out.print("Alıcı Hesap: ");
+        String toNo = sc.next();
+        System.out.print("Tutar: ");
+        double amount = sc.nextDouble();
+
+        Account from = bank.findAccountByNumber(fromNo);
+        Account to = bank.findAccountByNumber(toNo);
+
+        if (from == null || to == null) {
+            System.out.println("❌ Hesap bulunamadı");
+        } else if (!user.getAccounts().contains(from)) {
+            System.out.println("❌ Bu hesap size ait değil");
+        } else {
+            boolean success = bank.transfer(from, to, amount);
+            if (success) {
+                System.out.println("✅ Transfer başarılı");
+            } else {
+                System.out.println("❌ Yetersiz bakiye");
+            }
+        }
     }
 }
