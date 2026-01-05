@@ -16,8 +16,9 @@ The project follows basic Agile principles and task-based development.
 ---
 
 ## 🟨 To Do
+
+- Transaction refactor Transaction.java
  
- - Added login system and refactor main.java 
 
 ### 📐 Diagrams & Documentation
 - Final review of class diagram
@@ -48,6 +49,7 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟩 Done 
 
+ - Added login system and refactor main.java
 - Create Main test class
 - Create Bank class
 - Add CSV export for transactions
