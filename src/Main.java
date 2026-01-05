@@ -1,5 +1,6 @@
 import model.*;
 import java.util.Scanner;
+import java.util.List;
 
 public class Main {
 
@@ -54,6 +55,10 @@ public class Main {
                     break;
 
                 case 5:
+                    showTransactions(bank);
+                    break;
+
+                case 6:
                     bank.exportTransactionsToCSV("src/data/transactions.csv");
                     System.out.println("👋 Çıkış yapıldı");
                     break;
@@ -62,7 +67,7 @@ public class Main {
                     System.out.println("❌ Geçersiz seçim");
             }
 
-        } while (choice != 5);
+        } while (choice != 6);
     }
 
     // ===== MENU =====
@@ -72,7 +77,8 @@ public class Main {
         System.out.println("2. Para Yatır");
         System.out.println("3. Para Çek");
         System.out.println("4. Para Transferi");
-        System.out.println("5. Çıkış");
+        System.out.println("5. Transaction Geçmişi");
+        System.out.println("6. Çıkış");
         System.out.print("Seçim: ");
     }
 
@@ -84,9 +90,23 @@ public class Main {
         }
 
         for (Account acc : user.getAccounts()) {
-            System.out.println(
-                    acc.getAccountNumber() +
-                            " | Bakiye: " + acc.getBalance());
+            System.out.println(acc.getAccountNumber() +
+                    " | Bakiye: " + acc.getBalance());
+        }
+    }
+
+    // ===== SHOW TRANSACTIONS =====
+    private static void showTransactions(Bank bank) {
+        List<Transaction> transactions = bank.getTransactions();
+
+        if (transactions.isEmpty()) {
+            System.out.println("⚠️ Henüz işlem yok");
+            return;
+        }
+
+        System.out.println("\n--- TRANSACTION GEÇMİŞİ ---");
+        for (Transaction t : transactions) {
+            System.out.println(t);
         }
     }
 
