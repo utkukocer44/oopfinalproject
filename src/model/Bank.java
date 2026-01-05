@@ -14,15 +14,12 @@ public class Bank {
     private int transactionCounter;
 
     public Bank() {
-        accounts = new ArrayList<>();
-        transactions = new ArrayList<>();
-        transactionCounter = 1;
+        this.accounts = new ArrayList<>();
+        this.transactions = new ArrayList<>();
+        this.transactionCounter = 1;
     }
 
-    // =====================
-    // ACCOUNT OPERATIONS
-    // =====================
-
+    // ================= ACCOUNT =================
     public void addAccount(Account account) {
         accounts.add(account);
     }
@@ -40,91 +37,99 @@ public class Bank {
         return accounts;
     }
 
-    // =====================
-    // TRANSACTIONS
-    // =====================
-
-    public void deposit(Account account, double amount) {
-        if (amount <= 0)
-            return;
-
-        account.deposit(amount);
-
-        transactions.add(new Transaction(
-                transactionCounter++,
-                "DEPOSIT",
-                amount,
-                null,
-                account.getAccountNumber()));
-    }
-
-    public boolean withdraw(Account account, double amount) {
-        if (amount <= 0 || amount > account.getBalance()) {
-            return false;
-        }
-
-        account.withdraw(amount);
-
-        transactions.add(new Transaction(
-                transactionCounter++,
-                "WITHDRAW",
-                amount,
-                account.getAccountNumber(),
-                null));
-        return true;
-    }
-
-    public boolean transfer(Account from, Account to, double amount) {
-        if (amount <= 0 || from.getBalance() < amount) {
-            return false;
-        }
-
-        from.withdraw(amount);
-        to.deposit(amount);
-
-        transactions.add(new Transaction(
-                transactionCounter++,
-                "TRANSFER",
-                amount,
-                from.getAccountNumber(),
-                to.getAccountNumber()));
-        return true;
-    }
-
+    // ================= TRANSACTIONS =================
     public List<Transaction> getTransactions() {
         return transactions;
     }
 
-    // =====================
-    // CSV EXPORT
-    // =====================
+    // ================= DEPOSIT =================
+    public boolean deposit(Account account, double amount) {
+        if (account == null || amount <= 0)
+            return false;
 
+        account.deposit(amount);
+
+        transactions.add(
+                new Transaction(
+                        transactionCounter++,
+                        TransactionType.DEPOSIT,
+                        amount,
+                        null,
+                        account.getAccountNumber()
+                )
+        );
+        return true;
+    }
+
+    // ================= WITHDRAW =================
+    public boolean withdraw(Account account, double amount) {
+        if (account == null || amount <= 0)
+            return false;
+
+        if (amount > account.getBalance())
+            return false;
+
+        account.withdraw(amount);
+
+        transactions.add(
+                new Transaction(
+                        transactionCounter++,
+                        TransactionType.WITHDRAW,
+                        amount,
+                        account.getAccountNumber(),
+                        null
+                )
+        );
+        return true;
+    }
+
+    // ================= TRANSFER =================
+    public boolean transfer(Account from, Account to, double amount) {
+        if (from == null || to == null || amount <= 0)
+            return false;
+
+        if (from.getBalance() < amount)
+            return false;
+
+        from.withdraw(amount);
+        to.deposit(amount);
+
+        transactions.add(
+                new Transaction(
+                        transactionCounter++,
+                        TransactionType.TRANSFER,
+                        amount,
+                        from.getAccountNumber(),
+                        to.getAccountNumber()
+                )
+        );
+        return true;
+    }
+
+    // ================= CSV EXPORT =================
     public void exportTransactionsToCSV(String fileName) {
+
         try (FileWriter writer = new FileWriter(fileName)) {
 
-            writer.append("id,type,amount,fromAccount,toAccount,date\n");
+            writer.append("TransactionId,Type,Amount,From,To,Date\n");
 
             for (Transaction t : transactions) {
-                writer.append(t.getTransactionId() + ",")
-                        .append(t.getType() + ",")
-                        .append(t.getAmount() + ",")
-                        .append(t.getFromAccount() + ",")
-                        .append(t.getToAccount() + ",")
-                        .append(t.getDate().toString())
-                        .append("\n");
+                writer.append(String.valueOf(t.getTransactionId())).append(",");
+                writer.append(t.getType().name()).append(",");
+                writer.append(String.valueOf(t.getAmount())).append(",");
+                writer.append(String.valueOf(t.getFromAccount())).append(",");
+                writer.append(String.valueOf(t.getToAccount())).append(",");
+                writer.append(t.getDate().toString()).append("\n");
             }
 
-            System.out.println("Transactions exported to " + fileName);
+            System.out.println("✅ Transactions exported to " + fileName);
 
         } catch (IOException e) {
-            System.out.println("CSV export error: " + e.getMessage());
+            System.out.println("❌ CSV export error: " + e.getMessage());
         }
     }
 
-    // =====================
-    // CSV LOAD
-    // =====================
-
+    // ================= LOAD ACCOUNTS =================
     public void loadAccountsFromCSV(String fileName, AuthService authService) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -159,10 +164,10 @@ public class Bank {
                 }
             }
 
-            System.out.println("Accounts loaded from " + fileName);
+            System.out.println("✅ Accounts loaded from " + fileName);
 
         } catch (Exception e) {
-            System.out.println("Error loading accounts CSV: " + e.getMessage());
+            System.out.println("❌ Error loading accounts CSV: " + e.getMessage());
         }
     }
 }
