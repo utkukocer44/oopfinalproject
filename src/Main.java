@@ -55,7 +55,7 @@ public class Main {
                     break;
 
                 case 5:
-                    showTransactions(bank);
+                    showTransactions(bank, loggedUser);
                     break;
 
                 case 6:
@@ -95,16 +95,17 @@ public class Main {
         }
     }
 
-    // ===== SHOW TRANSACTIONS =====
-    private static void showTransactions(Bank bank) {
-        List<Transaction> transactions = bank.getTransactions();
+    // ===== SHOW USER TRANSACTIONS =====
+    private static void showTransactions(Bank bank, User user) {
+
+        List<Transaction> transactions = bank.getTransactionsForUser(user);
 
         if (transactions.isEmpty()) {
-            System.out.println("⚠️ Henüz işlem yok");
+            System.out.println("⚠️ Size ait işlem yok");
             return;
         }
 
-        System.out.println("\n--- TRANSACTION GEÇMİŞİ ---");
+        System.out.println("\n--- TRANSACTION GEÇMİŞİNİZ ---");
         for (Transaction t : transactions) {
             System.out.println(t);
         }
@@ -137,8 +138,7 @@ public class Main {
         Account acc = bank.findAccountByNumber(accNo);
 
         if (acc != null && user.getAccounts().contains(acc)) {
-            boolean success = bank.withdraw(acc, amount);
-            if (success) {
+            if (bank.withdraw(acc, amount)) {
                 System.out.println("✅ Para çekildi");
             } else {
                 System.out.println("❌ Yetersiz bakiye");
@@ -165,8 +165,7 @@ public class Main {
         } else if (!user.getAccounts().contains(from)) {
             System.out.println("❌ Bu hesap size ait değil");
         } else {
-            boolean success = bank.transfer(from, to, amount);
-            if (success) {
+            if (bank.transfer(from, to, amount)) {
                 System.out.println("✅ Transfer başarılı");
             } else {
                 System.out.println("❌ Yetersiz bakiye");

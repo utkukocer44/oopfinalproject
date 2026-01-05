@@ -17,7 +17,7 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟨 To Do
 
-- Transaction refactor Transaction.java
+- Test first version
  
 
 ### 📐 Diagrams & Documentation
@@ -43,13 +43,14 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
-- Add transaction history menu and display all transactions
+ - Finished first version 
 
 
 ---
 
 ## 🟩 Done 
 
+- Add transaction history menu and display all transactions
 - Refactor transactions with enum and full transaction details
 - Refactor ban.java
 - Added deposit and withdraw features in Bank class
