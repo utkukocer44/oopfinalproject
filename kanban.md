@@ -43,13 +43,18 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
- - Finished first version 
 
 
 ---
 
 ## 🟩 Done 
 
+- Fixed first version 
+- Add CSV export for transactions 
+- Design CSV structure for accounts 
+- Create data files for persistence 
+- Refactor Bank class with persistence support 
+- Added full transaction history support 
 - Add transaction history menu and display all transactions
 - Refactor transactions with enum and full transaction details
 - Refactor ban.java

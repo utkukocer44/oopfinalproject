@@ -2,10 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 
 public class Bank {
 
@@ -20,10 +17,6 @@ public class Bank {
     }
 
     // ================= ACCOUNT =================
-    public void addAccount(Account account) {
-        accounts.add(account);
-    }
-
     public Account findAccountByNumber(String accountNumber) {
         for (Account acc : accounts) {
             if (acc.getAccountNumber().equals(accountNumber)) {
@@ -49,12 +42,10 @@ public class Bank {
 
         for (Transaction t : transactions) {
             for (Account acc : user.getAccounts()) {
-
                 String accNo = acc.getAccountNumber();
 
                 if (accNo.equals(t.getFromAccount()) ||
-                        accNo.equals(t.getToAccount())) {
-
+                    accNo.equals(t.getToAccount())) {
                     result.add(t);
                     break;
                 }
@@ -75,7 +66,8 @@ public class Bank {
                 TransactionType.DEPOSIT,
                 amount,
                 null,
-                account.getAccountNumber()));
+                account.getAccountNumber()
+        ));
         return true;
     }
 
@@ -94,7 +86,8 @@ public class Bank {
                 TransactionType.WITHDRAW,
                 amount,
                 account.getAccountNumber(),
-                null));
+                null
+        ));
         return true;
     }
 
@@ -114,11 +107,51 @@ public class Bank {
                 TransactionType.TRANSFER,
                 amount,
                 from.getAccountNumber(),
-                to.getAccountNumber()));
+                to.getAccountNumber()
+        ));
         return true;
     }
 
-    // ================= CSV EXPORT =================
+    // ================= SAVE ACCOUNTS (🔥 PERSISTENCE) =================
+    public void saveAccountsToCSV(String fileName, AuthService authService) {
+
+        try (FileWriter writer = new FileWriter(fileName)) {
+
+            writer.append("username,accountNumber,type,balance,extra\n");
+
+            for (Account acc : accounts) {
+
+                User owner = authService.findOwnerOfAccount(acc);
+                if (owner == null) continue;
+
+                String type;
+                double extra;
+
+                if (acc instanceof SavingsAccount) {
+                    type = "SAVINGS";
+                    extra = ((SavingsAccount) acc).getInterestRate();
+                } else if (acc instanceof CheckingAccount) {
+                    type = "CHECKING";
+                    extra = ((CheckingAccount) acc).getOverdraftLimit();
+                } else {
+                    continue;
+                }
+
+                writer.append(owner.getUsername()).append(",");
+                writer.append(acc.getAccountNumber()).append(",");
+                writer.append(type).append(",");
+                writer.append(String.valueOf(acc.getBalance())).append(",");
+                writer.append(String.valueOf(extra)).append("\n");
+            }
+
+            System.out.println("✅ Accounts saved to " + fileName);
+
+        } catch (IOException e) {
+            System.out.println("❌ Account save error: " + e.getMessage());
+        }
+    }
+
+    // ================= SAVE TRANSACTIONS =================
     public void exportTransactionsToCSV(String fileName) {
 
         try (FileWriter writer = new FileWriter(fileName)) {
@@ -134,10 +167,10 @@ public class Bank {
                 writer.append(t.getDate().toString() + "\n");
             }
 
-            System.out.println("✅ Transactions exported to " + fileName);
+            System.out.println("✅ Transactions saved to " + fileName);
 
         } catch (IOException e) {
-            System.out.println("❌ CSV export error: " + e.getMessage());
+            System.out.println("❌ Transaction save error: " + e.getMessage());
         }
     }
 
