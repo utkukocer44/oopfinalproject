@@ -42,6 +42,27 @@ public class Bank {
         return transactions;
     }
 
+    // 🔥 SADECE LOGGED USER TRANSACTIONS
+    public List<Transaction> getTransactionsForUser(User user) {
+
+        List<Transaction> result = new ArrayList<>();
+
+        for (Transaction t : transactions) {
+            for (Account acc : user.getAccounts()) {
+
+                String accNo = acc.getAccountNumber();
+
+                if (accNo.equals(t.getFromAccount()) ||
+                        accNo.equals(t.getToAccount())) {
+
+                    result.add(t);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     // ================= DEPOSIT =================
     public boolean deposit(Account account, double amount) {
         if (account == null || amount <= 0)
@@ -49,15 +70,12 @@ public class Bank {
 
         account.deposit(amount);
 
-        transactions.add(
-                new Transaction(
-                        transactionCounter++,
-                        TransactionType.DEPOSIT,
-                        amount,
-                        null,
-                        account.getAccountNumber()
-                )
-        );
+        transactions.add(new Transaction(
+                transactionCounter++,
+                TransactionType.DEPOSIT,
+                amount,
+                null,
+                account.getAccountNumber()));
         return true;
     }
 
@@ -71,15 +89,12 @@ public class Bank {
 
         account.withdraw(amount);
 
-        transactions.add(
-                new Transaction(
-                        transactionCounter++,
-                        TransactionType.WITHDRAW,
-                        amount,
-                        account.getAccountNumber(),
-                        null
-                )
-        );
+        transactions.add(new Transaction(
+                transactionCounter++,
+                TransactionType.WITHDRAW,
+                amount,
+                account.getAccountNumber(),
+                null));
         return true;
     }
 
@@ -94,15 +109,12 @@ public class Bank {
         from.withdraw(amount);
         to.deposit(amount);
 
-        transactions.add(
-                new Transaction(
-                        transactionCounter++,
-                        TransactionType.TRANSFER,
-                        amount,
-                        from.getAccountNumber(),
-                        to.getAccountNumber()
-                )
-        );
+        transactions.add(new Transaction(
+                transactionCounter++,
+                TransactionType.TRANSFER,
+                amount,
+                from.getAccountNumber(),
+                to.getAccountNumber()));
         return true;
     }
 
@@ -114,12 +126,12 @@ public class Bank {
             writer.append("TransactionId,Type,Amount,From,To,Date\n");
 
             for (Transaction t : transactions) {
-                writer.append(String.valueOf(t.getTransactionId())).append(",");
-                writer.append(t.getType().name()).append(",");
-                writer.append(String.valueOf(t.getAmount())).append(",");
-                writer.append(String.valueOf(t.getFromAccount())).append(",");
-                writer.append(String.valueOf(t.getToAccount())).append(",");
-                writer.append(t.getDate().toString()).append("\n");
+                writer.append(t.getTransactionId() + ",");
+                writer.append(t.getType().name() + ",");
+                writer.append(t.getAmount() + ",");
+                writer.append(t.getFromAccount() + ",");
+                writer.append(t.getToAccount() + ",");
+                writer.append(t.getDate().toString() + "\n");
             }
 
             System.out.println("✅ Transactions exported to " + fileName);
