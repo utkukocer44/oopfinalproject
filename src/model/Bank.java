@@ -33,7 +33,7 @@ public class Bank {
         }
     }
 
-    // WITHDRAW with transaction + balance control
+    // WITHDRAW with transaction
     public boolean withdraw(Account account, double amount) {
         if (amount > 0 && amount <= account.getBalance()) {
             account.withdraw(amount);
@@ -65,6 +65,16 @@ public class Bank {
         return accounts;
     }
 
+    // FIND ACCOUNT BY NUMBER ✅ (HATA FIX)
+    public Account findAccountByNumber(String accountNumber) {
+        for (Account acc : accounts) {
+            if (acc.getAccountNumber().equals(accountNumber)) {
+                return acc;
+            }
+        }
+        return null;
+    }
+
     // EXPORT TRANSACTIONS
     public void exportTransactionsToCSV(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
@@ -83,7 +93,7 @@ public class Bank {
         }
     }
 
-    // LOAD ACCOUNTS
+    // LOAD ACCOUNTS (simple)
     public void loadAccountsFromCSV(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
 
@@ -110,41 +120,13 @@ public class Bank {
         }
     }
 
-    // SAVE ACCOUNTS
-    public void saveAccountsToCSV(String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
-
-            writer.append("accountNumber,type,balance,extra\n");
-
-            for (Account a : accounts) {
-
-                if (a instanceof SavingsAccount) {
-                    SavingsAccount sa = (SavingsAccount) a;
-                    writer.append(sa.getAccountNumber()).append(",SAVINGS,")
-                            .append(String.valueOf(sa.getBalance())).append(",")
-                            .append(String.valueOf(sa.calculateInterest() / sa.getBalance()))
-                            .append("\n");
-
-                } else if (a instanceof CheckingAccount) {
-                    CheckingAccount ca = (CheckingAccount) a;
-                    writer.append(ca.getAccountNumber()).append(",CHECKING,")
-                            .append(String.valueOf(ca.getBalance())).append(",")
-                            .append(String.valueOf(ca.getOverdraftLimit()))
-                            .append("\n");
-                }
-            }
-
-        } catch (IOException e) {
-            System.out.println("Account save error: " + e.getMessage());
-        }
-    }
-
+    // LOAD ACCOUNTS WITH USERS
     public void loadAccountsFromCSV(String fileName, AuthService authService) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
 
+            reader.readLine(); // header
             String line;
-            reader.readLine(); // header atla
 
             while ((line = reader.readLine()) != null) {
 
@@ -179,5 +161,4 @@ public class Bank {
             System.out.println("Error loading accounts CSV: " + e.getMessage());
         }
     }
-
 }
