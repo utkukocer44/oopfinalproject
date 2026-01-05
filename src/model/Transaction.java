@@ -5,14 +5,17 @@ import java.util.Date;
 public class Transaction {
 
     private int transactionId;
-    private String type;
+    private TransactionType type;
     private double amount;
     private String fromAccount;
     private String toAccount;
     private Date date;
 
-    public Transaction(int transactionId, String type, double amount,
-                       String fromAccount, String toAccount) {
+    public Transaction(int transactionId,
+                       TransactionType type,
+                       double amount,
+                       String fromAccount,
+                       String toAccount) {
 
         this.transactionId = transactionId;
         this.type = type;
@@ -26,7 +29,7 @@ public class Transaction {
         return transactionId;
     }
 
-    public String getType() {
+    public TransactionType getType() {
         return type;
     }
 
@@ -50,7 +53,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + transactionId +
-                ", type='" + type + '\'' +
+                ", type=" + type +
                 ", amount=" + amount +
                 ", from='" + fromAccount + '\'' +
                 ", to='" + toAccount + '\'' +
