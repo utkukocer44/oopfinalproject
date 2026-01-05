@@ -59,7 +59,10 @@ public class Main {
                     break;
 
                 case 6:
+                    // 🔥 KALICI KAYIT (PERSISTENCE)
+                    bank.saveAccountsToCSV("src/data/accounts.csv", authService);
                     bank.exportTransactionsToCSV("src/data/transactions.csv");
+
                     System.out.println("👋 Çıkış yapıldı");
                     break;
 
@@ -68,6 +71,8 @@ public class Main {
             }
 
         } while (choice != 6);
+
+        sc.close();
     }
 
     // ===== MENU =====
@@ -90,8 +95,9 @@ public class Main {
         }
 
         for (Account acc : user.getAccounts()) {
-            System.out.println(acc.getAccountNumber() +
-                    " | Bakiye: " + acc.getBalance());
+            System.out.println(
+                    acc.getAccountNumber() +
+                            " | Bakiye: " + acc.getBalance());
         }
     }
 

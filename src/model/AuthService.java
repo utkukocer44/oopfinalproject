@@ -28,15 +28,14 @@ public class AuthService {
                 users.add(new User(username, password));
             }
 
-            System.out.println("Users loaded from " + fileName);
+            System.out.println("✅ Users loaded from " + fileName);
 
         } catch (Exception e) {
-            System.out.println("Error loading users CSV: " + e.getMessage());
+            System.out.println("❌ Error loading users CSV: " + e.getMessage());
         }
     }
 
     public User login(String username, String password) {
-
         for (User u : users) {
             if (u.getUsername().equals(username)
                     && u.checkPassword(password)) {
@@ -55,4 +54,13 @@ public class AuthService {
         return null;
     }
 
+    // 🔥 ACCOUNT SAHİBİNİ BUL (CSV SAVE İÇİN KRİTİK)
+    public User findOwnerOfAccount(Account account) {
+        for (User user : users) {
+            if (user.getAccounts().contains(account)) {
+                return user;
+            }
+        }
+        return null;
+    }
 }
