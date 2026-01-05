@@ -43,13 +43,14 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
- - Refactor transactions with enum and full transaction details
+- Add transaction history menu and display all transactions
 
 
 ---
 
 ## 🟩 Done 
 
+- Refactor transactions with enum and full transaction details
 - Refactor ban.java
 - Added deposit and withdraw features in Bank class
 - Added login system and refactor main.java
