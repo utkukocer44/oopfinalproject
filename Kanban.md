@@ -17,8 +17,6 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟨 To Do
 
-- Test first version
- 
 
 ### 📐 Diagrams & Documentation
 - Final review of class diagram
@@ -43,12 +41,14 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
+- Create README.md documentation
 
 
 ---
 
 ## 🟩 Done 
 
+- Test first version
 - Fixed first version 
 - Add CSV export for transactions 
 - Design CSV structure for accounts 

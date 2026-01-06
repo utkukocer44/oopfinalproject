@@ -17,6 +17,10 @@ public class Bank {
     }
 
     // ================= ACCOUNT =================
+    public void addAccount(Account account) {
+        accounts.add(account);
+    }
+
     public Account findAccountByNumber(String accountNumber) {
         for (Account acc : accounts) {
             if (acc.getAccountNumber().equals(accountNumber)) {
@@ -35,7 +39,7 @@ public class Bank {
         return transactions;
     }
 
-    // 🔥 SADECE LOGGED USER TRANSACTIONS
+    
     public List<Transaction> getTransactionsForUser(User user) {
 
         List<Transaction> result = new ArrayList<>();
@@ -112,7 +116,7 @@ public class Bank {
         return true;
     }
 
-    // ================= SAVE ACCOUNTS (🔥 PERSISTENCE) =================
+    // ================= SAVE ACCOUNTS ( PERSISTENCE) =================
     public void saveAccountsToCSV(String fileName, AuthService authService) {
 
         try (FileWriter writer = new FileWriter(fileName)) {
