@@ -41,13 +41,13 @@ The project follows basic Agile principles and task-based development.
 
 ## 🟧 In Progress
 
-- Create README.md documentation
 
 
 ---
 
 ## 🟩 Done 
 
+- Create README.md documentation
 - Test first version
 - Fixed first version 
 - Add CSV export for transactions 
